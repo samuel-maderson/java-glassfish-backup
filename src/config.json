@@ -1,0 +1,11 @@
+{
+    "Application": {
+		"path": "/tmp/revolucionario",
+		"name": "revolucionario"
+	},
+	"MySQL": {
+		"dumpfile": "/tmp/backup.sql",
+		"database": "revolucionario",
+		"host": "localhost"
+	}
+}
