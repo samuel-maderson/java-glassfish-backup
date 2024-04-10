@@ -1,11 +1,19 @@
 {
+	"destination": "/tmp",
     "Application": {
 		"path": "/tmp/revolucionario",
-		"name": "revolucionario"
+		"name": "revolucionario",
+		"zipApp": "app-revolucionario.zip"
 	},
 	"MySQL": {
 		"dumpfile": "/tmp/backup.sql",
 		"database": "revolucionario",
-		"host": "localhost"
+		"host": "localhost",
+		"zipDump": "db-revolucionario.zip"
+	},
+	"AWS": {
+		"S3": {
+			"bucketName": "teste-2024"
+		}
 	}
 }
