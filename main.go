@@ -3,12 +3,14 @@ package main
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	zip "java-glassfish-backup/src/copy-dir.go"
 	mysqldump "java-glassfish-backup/src/mysql-dump"
 	s3 "java-glassfish-backup/src/s3"
 	"java-glassfish-backup/src/types"
 	"log"
+	"time"
 
 	arg "github.com/alexflint/go-arg"
 	"github.com/aws/aws-sdk-go-v2/aws"
@@ -31,6 +33,7 @@ var (
 	zipDump       string
 	destination   string
 	bucketName    string
+	formatted     string
 	err           error
 	cfg           aws.Config
 )
@@ -42,6 +45,11 @@ func init() {
 	if args.User == "" && args.Password == "" {
 		log.Fatalln("MySQL user and password are required")
 	}
+
+	now := time.Now()
+
+	formatted = now.Format("15h-04m-2006-01-02")
+	fmt.Println(formatted)
 
 	godotenv.Load()
 
@@ -64,8 +72,8 @@ func init() {
 	mysqldatabase = config_custom.MySQL.Database
 	appPath = config_custom.Application.Path
 	appName = config_custom.Application.Name
-	zipApp = config_custom.Application.ZipApp
-	zipDump = config_custom.MySQL.ZipDump
+	zipApp = config_custom.Application.ZipApp + "-" + formatted + ".zip"
+	zipDump = config_custom.MySQL.ZipDump + "-" + formatted + ".zip"
 	destination = config_custom.Destination
 	bucketName = config_custom.AWS.S3.BucketName
 }
@@ -74,9 +82,9 @@ func main() {
 
 	log.Println("\033[1;32m[+]\033[0m MySQL  | Dumping database:", mysqldatabase, "as:", mysqldumpfile)
 	mysqldump.Dump(mysqlhost, mysqluser, mysqlpass, mysqldatabase, mysqldumpfile)
-	log.Println("\033[1;32m[+]\033[0m App    | Backing up application:", appPath, "as:", appName+".zip")
+	log.Println("\033[1;32m[+]\033[0m App    | Backing up application:", appPath, "as:", zipApp)
 	zip.Dir(appPath, zipApp, destination)
-	log.Println("\033[1;32m[+]\033[0m MySQL  | Backing up MySQL:", appPath, "as:", appName+".zip")
+	log.Println("\033[1;32m[+]\033[0m MySQL  | Backing up MySQL:", appPath, "as:", zipDump)
 	zip.File(mysqldumpfile, zipDump, destination)
 	log.Println("\033[1;32m[+]\033[0m AWS-S3 | Uploading MySQL:", zipDump, "on Bucket:", bucketName)
 	s3.Upload(cfg, bucketName, zipDump, destination+"/"+zipDump)

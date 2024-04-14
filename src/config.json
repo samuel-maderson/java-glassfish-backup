@@ -3,13 +3,13 @@
     "Application": {
 		"path": "/tmp/revolucionario",
 		"name": "revolucionario",
-		"zipApp": "app-revolucionario.zip"
+		"zipApp": "app-revolucionario"
 	},
 	"MySQL": {
 		"dumpfile": "/tmp/backup.sql",
 		"database": "revolucionario",
 		"host": "localhost",
-		"zipDump": "db-revolucionario.zip"
+		"zipDump": "db-revolucionario"
 	},
 	"AWS": {
 		"S3": {
