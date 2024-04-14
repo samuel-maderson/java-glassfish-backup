@@ -13,6 +13,7 @@ import (
 	arg "github.com/alexflint/go-arg"
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/config"
+	"github.com/joho/godotenv"
 )
 
 var (
@@ -41,6 +42,8 @@ func init() {
 	if args.User == "" && args.Password == "" {
 		log.Fatalln("MySQL user and password are required")
 	}
+
+	godotenv.Load()
 
 	cfg, err = config.LoadDefaultConfig(context.TODO())
 	if err != nil {
